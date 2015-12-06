@@ -1,0 +1,81 @@
+name: "sentiment-topology"
+
+config:
+  topology.workers: 1
+
+spouts:
+  - id: "spout-1"
+    className: "com.sourcevirtues.sentiment.storm.pure.spout.RandomSentenceSpout"
+    parallelism: 1
+
+bolts:
+  - id: "bolt-stem"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.StemmingBolt"
+    parallelism: 1
+    # ...
+
+  - id: "bolt-positive"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.PositiveBolt"
+    parallelism: 1
+
+  - id: "bolt-negative"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.NegativeBolt"
+    parallelism: 1
+
+  - id: "bolt-score"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.ScoreBolt"
+    parallelism: 1
+
+  - id: "bolt-log"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.LoggingBolt"
+    parallelism: 1
+
+  - id: "bolt-hbase"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.HBaseBatchBolt"
+    configMethods:
+      - name: "withTable"
+        args: ["SentimentAnalysisStorm", "cf", "json"]
+    parallelism: 1
+
+streams:
+  - name: "random --> stem" # name isn't used (placeholder for logging, UI, etc.)
+    from: "spout-1"
+    to: "bolt-stem"
+    grouping:
+      type: SHUFFLE
+
+  - name: "stem --> positive"
+    from: "bolt-stem"
+    to: "bolt-positive"
+    grouping:
+      type: SHUFFLE
+
+  - name: "positive --> negative"
+    from: "bolt-positive"
+    to: "bolt-negative"
+    grouping:
+      type: SHUFFLE
+
+  - name: "negative --> log"
+    from: "bolt-positive"
+    to: "bolt-negative"
+    grouping:
+      type: SHUFFLE
+
+  - name: "count --> score"
+    from: "bolt-negative"
+    to: "bolt-score"
+    grouping:
+      type: SHUFFLE
+
+  - name: "score --> log"
+    from: "bolt-score"
+    to: "bolt-log"
+    grouping:
+      type: SHUFFLE
+
+  - name: "score --> hbase"
+    from: "bolt-score"
+    to: "bolt-hbase"
+    grouping:
+      type: SHUFFLE
