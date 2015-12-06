@@ -26,9 +26,9 @@ Application has been tested with HBase 1.1.2 and Cloudera 5.4.x/5.5.x
 ### Running in local mode
 
 Using Flux:
-- ```storm jar target/my-storm-sentiment-0.0.1-SNAPSHOT.jar org.apache.storm.flux.Flux --local src/test/resources/flux/topology.yaml -s 10000```
+- ```storm jar target/sentiment-analysis-storm-0.0.1-SNAPSHOT.jar org.apache.storm.flux.Flux --local src/test/resources/flux/topology.yaml -s 10000```
 
 ### Running in cluster mode
 
 Using Flux:
-- ```storm jar target/my-storm-sentiment-0.0.1-SNAPSHOT.jar org.apache.storm.flux.Flux --remote src/test/resources/flux/topology.yaml --c nimbus.host=localhost```
+- ```storm jar target/sentiment-analysis-storm-0.0.1-SNAPSHOT.jar org.apache.storm.flux.Flux --remote src/test/resources/flux/topology.yaml --c nimbus.host=localhost```
