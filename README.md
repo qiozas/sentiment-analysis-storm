@@ -1,13 +1,13 @@
-Simple Sentiment Analysis example using Apache Storm
+Simple Sentiment Analysis using Apache Storm
 ============
 
 A very simple project that simulates how to execute sentiment analysis using [Apache Storm](https://github.com/apache/storm) 0.10.x.
 
-Random sentences are emitted by a dummy Spout. Then words of each sentence are splitted and then stemmed based on a dummy collection (could be replaced with a real DB). New sentence is emitted again without the "useless" words. New sentence is processed by PositiveBolt and a positive score is calculated and emitted. New sentence is processed again by NegativeBolt and a negative score is calculated and emitted, additional to positive score. ScoreBolt compares 2 previous and decide if this sentence is positive or negative. Then final result, original and modified sentences are persisted to HBase (by HBaseBatchBolt) and logged (by LoggingBolt) in file too.
+Random sentences are emitted by a dummy Spout. Then words of each sentence are splitted (by space) and  stemmed based on a dummy collection (could be replaced with a real DB) of words. New sentence is emitted again without the "useless" word and processed by PositiveBolt, where a positive score is calculated and emitted. New sentence is processed again by NegativeBolt and a negative score is calculated and emitted, additional to positive score. ScoreBolt compares 2 previous scores and decides if this sentence is positive or negative. Then final result, original and modified sentences, are persisted to HBase (by HBaseBatchBolt) and logged (by LoggingBolt) too.
 
 Storm external module [Flux](https://github.com/apache/storm/tree/master/external/flux) is used to define and deploy topology in Storm.
 
-Application has been tested with HBase 1.1.2 and Cloudera 5.4.x/5.5.x
+Application has been tested with Apache HBase 1.1.2 and Cloudera 5.4.x/5.5.x
 
 ## Usage
 ### Prerequisites

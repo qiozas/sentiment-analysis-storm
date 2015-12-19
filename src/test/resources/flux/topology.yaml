@@ -12,7 +12,6 @@ bolts:
   - id: "bolt-stem"
     className: "com.sourcevirtues.sentiment.storm.pure.bolt.StemmingBolt"
     parallelism: 1
-    # ...
 
   - id: "bolt-positive"
     className: "com.sourcevirtues.sentiment.storm.pure.bolt.PositiveBolt"
@@ -42,40 +41,40 @@ streams:
     from: "spout-1"
     to: "bolt-stem"
     grouping:
-      type: SHUFFLE
+      type: LOCAL_OR_SHUFFLE
 
   - name: "stem --> positive"
     from: "bolt-stem"
     to: "bolt-positive"
     grouping:
-      type: SHUFFLE
+      type: LOCAL_OR_SHUFFLE
 
   - name: "positive --> negative"
     from: "bolt-positive"
     to: "bolt-negative"
     grouping:
-      type: SHUFFLE
+      type: LOCAL_OR_SHUFFLE
 
   - name: "negative --> log"
     from: "bolt-positive"
     to: "bolt-negative"
     grouping:
-      type: SHUFFLE
+      type: LOCAL_OR_SHUFFLE
 
   - name: "count --> score"
     from: "bolt-negative"
     to: "bolt-score"
     grouping:
-      type: SHUFFLE
+      type: LOCAL_OR_SHUFFLE
 
   - name: "score --> log"
     from: "bolt-score"
     to: "bolt-log"
     grouping:
-      type: SHUFFLE
+      type: LOCAL_OR_SHUFFLE
 
   - name: "score --> hbase"
     from: "bolt-score"
     to: "bolt-hbase"
     grouping:
-      type: SHUFFLE
+      type: LOCAL_OR_SHUFFLE
