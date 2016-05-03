@@ -10,6 +10,8 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Row;
 import org.apache.hadoop.hbase.client.Table;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple HBase client.
@@ -18,6 +20,7 @@ import org.apache.hadoop.hbase.util.Bytes;
  * 
  */
 public class HBaseSimpleClient {
+   private static final Logger LOG = LoggerFactory.getLogger(HBaseSimpleClient.class);
 
    private Table htable;
    private String tableName;
@@ -30,6 +33,8 @@ public class HBaseSimpleClient {
       try {
          Connection con = ConnectionFactory.createConnection();
          htable = con.getTable(TableName.valueOf(tableName));
+
+         LOG.info("Initialized for Table={}", tableName);
       } catch (IOException e) {
          throw new IllegalStateException(e);
       }
@@ -55,6 +60,17 @@ public class HBaseSimpleClient {
       }
 
       return results;
+   }
+
+   public void shutdown() {
+      LOG.info("START shutdown: Table={}", tableName);
+      if (htable != null) {
+         try {
+            htable.close();
+         } catch (IOException e) {
+            LOG.error("Error on shutdown for Table=" + tableName, e);
+         }
+      }
    }
 
    @Override

@@ -29,6 +29,13 @@ bolts:
     className: "com.sourcevirtues.sentiment.storm.pure.bolt.LoggingBolt"
     parallelism: 1
 
+  - id: "bolt-hbase"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.HBaseBatchBolt"
+    configMethods:
+      - name: "withTable"
+        args: ["SentimentAnalysisStorm", "cf", "json"]
+    parallelism: 1
+
 streams:
   - name: "random --> stem" # name isn't used (placeholder for logging, UI, etc.)
     from: "spout-1"
@@ -63,5 +70,11 @@ streams:
   - name: "score --> log"
     from: "bolt-score"
     to: "bolt-log"
+    grouping:
+      type: LOCAL_OR_SHUFFLE
+
+  - name: "score --> hbase"
+    from: "bolt-score"
+    to: "bolt-hbase"
     grouping:
       type: LOCAL_OR_SHUFFLE

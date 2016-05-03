@@ -1,0 +1,126 @@
+name: "sentiment-topology"
+
+components:
+  - id: "stringScheme"
+    className: "org.apache.storm.kafka.StringScheme"
+
+  - id: "stringMultiScheme"
+    className: "org.apache.storm.spout.SchemeAsMultiScheme"
+    constructorArgs:
+      - ref: "stringScheme"
+
+  - id: "zkHosts"
+    className: "org.apache.storm.kafka.ZkHosts"
+    constructorArgs:
+      - "localhost:2181"
+      
+  - id: "topicSelector"
+    className: "org.apache.storm.kafka.bolt.selector.DefaultTopicSelector"
+    constructorArgs:
+      - "sentimentOut"
+
+  - id: "kafkaMapper"
+    className: "org.apache.storm.kafka.bolt.mapper.FieldNameBasedTupleToKafkaMapper"
+
+  - id: "kafkaProducerProps"
+    className: "java.util.Properties"
+    configMethods:
+      - name: "put"
+        args:
+          - "bootstrap.servers"
+          - "localhost:9092"
+      - name: "put"
+        args:
+          - "acks"
+          - "1"
+      - name: "put"
+        args:
+          - "key.serializer"
+          - "org.apache.kafka.common.serialization.StringSerializer"
+      - name: "put"
+        args:
+          - "value.serializer"
+          - "org.apache.kafka.common.serialization.StringSerializer" 
+
+config:
+  topology.workers: 1
+
+spouts:
+  - id: "spout-1"
+    className: "com.sourcevirtues.sentiment.storm.pure.spout.RandomSentenceSpout"
+    parallelism: 1
+
+bolts:
+  - id: "bolt-stem"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.StemmingBolt"
+    parallelism: 1
+
+  - id: "bolt-positive"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.PositiveBolt"
+    parallelism: 1
+
+  - id: "bolt-negative"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.NegativeBolt"
+    parallelism: 1
+
+  - id: "bolt-score"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.ScoreBolt"
+    parallelism: 1
+
+  - id: "bolt-log"
+    className: "com.sourcevirtues.sentiment.storm.pure.bolt.LoggingBolt"
+    parallelism: 1
+    
+  - id: "bolt-kafka"
+    className: "org.apache.storm.kafka.bolt.KafkaBolt"
+    parallelism: 1
+    configMethods:
+      - name: "withProducerProperties"
+        args: [ref: "kafkaProducerProps"]
+      - name: "withTopicSelector"
+        args: [ref: "topicSelector"]
+      - name: "withTupleToKafkaMapper"
+        args: [ref: "kafkaMapper"]
+
+streams:
+  - name: "random --> stem" # name isn't used (placeholder for logging, UI, etc.)
+    from: "spout-1"
+    to: "bolt-stem"
+    grouping:
+      type: LOCAL_OR_SHUFFLE
+
+  - name: "stem --> positive"
+    from: "bolt-stem"
+    to: "bolt-positive"
+    grouping:
+      type: LOCAL_OR_SHUFFLE
+
+  - name: "positive --> negative"
+    from: "bolt-positive"
+    to: "bolt-negative"
+    grouping:
+      type: LOCAL_OR_SHUFFLE
+
+  - name: "negative --> log"
+    from: "bolt-positive"
+    to: "bolt-negative"
+    grouping:
+      type: LOCAL_OR_SHUFFLE
+
+  - name: "count --> score"
+    from: "bolt-negative"
+    to: "bolt-score"
+    grouping:
+      type: LOCAL_OR_SHUFFLE
+
+  - name: "score --> log"
+    from: "bolt-score"
+    to: "bolt-log"
+    grouping:
+      type: LOCAL_OR_SHUFFLE
+
+  - name: "score --> kafka"
+    from: "bolt-score"
+    to: "bolt-kafka"
+    grouping:
+      type: LOCAL_OR_SHUFFLE

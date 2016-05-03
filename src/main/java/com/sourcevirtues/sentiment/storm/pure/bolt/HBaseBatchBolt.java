@@ -126,6 +126,10 @@ public class HBaseBatchBolt extends BaseRichBolt {
       return this;
    }
 
+   public void cleanup() {
+      hbaseClient.shutdown();
+   }
+
    public HBaseBatchBolt withTable(String tableName, String cf, String column) {
       this.tableName = tableName;
       this.columnFamily = cf;
