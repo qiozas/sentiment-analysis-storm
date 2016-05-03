@@ -7,6 +7,8 @@ Random sentences are emitted by a dummy Spout. Then words of each sentence are s
 
 Storm external module [Flux](https://github.com/apache/storm/tree/master/external/flux) is used to define and deploy topology in Storm.
 
+For extra details and comment check [here](http://sourcevirtues.com/2015/12/18/real-time-sentiment-analysis-example-with-apache-storm/).
+
 Application has been tested with Apache HBase 1.1.2 and Cloudera 5.4.x/5.5.x
 
 ## Usage
