@@ -3,11 +3,17 @@ Simple Sentiment Analysis using Apache Storm
 
 A very simple project that simulates how to execute sentiment analysis using [Apache Storm](https://github.com/apache/storm) 1.0.x.
 
-Random sentences are emitted by a dummy Spout. Words of each sentence are splitted (by space) and  stemmed based on a dummy collection (could be replaced with a real DB) of words. New sentence is emitted again without the "useless" words and processed by PositiveBolt, where a positive score is calculated and emitted. New sentence is processed again by NegativeBolt and a negative score is calculated and emitted, additional to positive score. ScoreBolt compares 2 previous scores and decides if this sentence is positive or negative. Then final result (original and modified sentences and score) logged (by LoggingBolt) too and persisted to HBase or to Kafka (topic "sentimentOut").
+Workflow processing steps: 
+- Random sentences are emitted by a dummy Spout. 
+- Words of each sentence are splitted (by space) and  stemmed based on a dummy collection (could be replaced with a real DB) of words. 
+- New sentence is emitted again without the "useless" words and processed by PositiveBolt, where a positive score is calculated and emitted. 
+- New sentence is processed again by NegativeBolt and a negative score is calculated and emitted, additional to positive score. 
+- ScoreBolt compares 2 previous scores and decides if this sentence is positive or negative. 
+- Then final result (original and modified sentences and score) logged (by LoggingBolt) too and persisted to HBase or to Kafka (topic "sentimentOut").
 
 Storm external module [Flux](https://github.com/apache/storm/tree/master/external/flux) is used to define and deploy topology in Storm.
 
-For extra details and comment check [here](http://sourcevirtues.com/2015/12/18/real-time-sentiment-analysis-example-with-apache-storm/).
+For extra details and comments check [blog post](http://sourcevirtues.com/2015/12/18/real-time-sentiment-analysis-example-with-apache-storm/).
 
 Application has been tested with:
 - Apache HBase 1.1.2 and HBase provided by Cloudera 5.4.x/5.5.x
@@ -17,7 +23,6 @@ Application has been tested with:
 In case you need just to LOG result, then there is no dependencies. 
 
 If you need to persist result, then you need any of the following:
-
 - Download [HBase 1.1.x](https://hbase.apache.org/) and extract tgz.
   - Run single node of HBase
     - ```$> cd bin```
