@@ -33,7 +33,7 @@ public class HBaseBatchBolt extends BaseRichBolt {
    private transient List<Row> rows;
    private transient List<Tuple> tupleBatch;
 
-   private OutputCollector collector;
+   private transient OutputCollector collector;
 
    private int tickTupleSec = 1;
    private String tableName;
