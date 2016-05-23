@@ -5,9 +5,9 @@
  <version>0.0.1-SNAPSHOT</version>
 
  <properties>
-  <storm.version>1.0.0</storm.version>
+  <storm.version>1.0.1</storm.version>
   <log4j2.storm.version>2.1</log4j2.storm.version>
-  <kafka.version>0.8.2.2</kafka.version>
+  <kafka.version>0.9.0.1</kafka.version>
  </properties>
 
  <dependencies>
@@ -28,6 +28,21 @@
    <groupId>org.apache.storm</groupId>
    <artifactId>storm-kafka</artifactId>
    <version>${storm.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>org.apache.kafka</groupId>
+   <artifactId>kafka_2.11</artifactId>
+   <version>${kafka.version}</version>
+   <exclusions>
+    <exclusion>
+     <artifactId>slf4j-log4j12</artifactId>
+     <groupId>org.slf4j</groupId>
+    </exclusion>
+    <exclusion>
+     <artifactId>log4j</artifactId>
+     <groupId>log4j</groupId>
+    </exclusion>
+   </exclusions>
   </dependency>
 
   <dependency>
@@ -56,22 +71,6 @@
      <groupId>commons-logging</groupId>
     </exclusion>
    </exclusions>
-  </dependency>
-  
-  <dependency>
-    <groupId>org.apache.kafka</groupId>
-    <artifactId>kafka_2.10</artifactId>
-    <version>${kafka.version}</version>
-    <exclusions>
-      <exclusion>
-        <artifactId>slf4j-log4j12</artifactId>
-        <groupId>org.slf4j</groupId>
-      </exclusion>
-      <exclusion>
-        <artifactId>log4j</artifactId>
-        <groupId>log4j</groupId>
-      </exclusion>
-    </exclusions>
   </dependency>
 
   <!-- <dependency>
