@@ -90,6 +90,7 @@ public class NegativeBolt extends BaseBasicBolt {
          negativeWords.add("disease");
          negativeWords.add("bad");
          negativeWords.add("sad");
+         negativeWords.add("evil");
       }
 
       static NegativeWords get() {
