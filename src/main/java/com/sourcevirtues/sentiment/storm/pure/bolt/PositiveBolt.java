@@ -85,6 +85,10 @@ public class PositiveBolt extends BaseBasicBolt {
          positiveWords.add("admire");
          positiveWords.add("bonus");
          positiveWords.add("calm");
+         positiveWords.add("good");
+         positiveWords.add("accept");
+         positiveWords.add("happiness");
+         positiveWords.add("amazing");
       }
 
       static PositiveWords get() {
