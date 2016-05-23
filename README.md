@@ -59,3 +59,5 @@ If you need to persist result, then you need any of the following:
   - ```storm jar target/sentiment-analysis-storm-0.0.1-SNAPSHOT.jar org.apache.storm.flux.Flux --remote -c nimbus.host=localhost src/test/resources/flux/topology_hbase.yaml```
 - Kafka persistence:
   - ```storm jar target/sentiment-analysis-storm-0.0.1-SNAPSHOT.jar org.apache.storm.flux.Flux --remote -c nimbus.host=localhost src/test/resources/flux/topology_kafka.yaml```
+  
+  
