@@ -42,7 +42,7 @@ components:
           - "value.serializer"
           - "org.apache.kafka.common.serialization.StringSerializer" 
 
- - id: "spoutConfig"
+  - id: "spoutConfig"
     className: "org.apache.storm.kafka.SpoutConfig"
     constructorArgs:
       # brokerHosts
