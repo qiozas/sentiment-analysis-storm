@@ -42,19 +42,6 @@ components:
           - "value.serializer"
           - "org.apache.kafka.common.serialization.StringSerializer" 
 
-  - id: "spoutConfig"
-    className: "org.apache.storm.kafka.SpoutConfig"
-    constructorArgs:
-      - ref: "zkHosts"
-      - "sentimentIn"
-      - "/kafkaSpout"
-      - "myId"
-    properties:
-      - name: "ignoreZkOffsets"
-        value: true
-      - name: "scheme"
-        ref: "stringMultiScheme"
-
 config:
   topology.workers: 1
 
@@ -62,11 +49,6 @@ spouts:
   - id: "spout-1"
     className: "com.sourcevirtues.sentiment.storm.pure.spout.RandomSentenceSpout"
     parallelism: 1
-
-  - id: "kafka-spout"
-    className: "org.apache.storm.kafka.KafkaSpout"
-    constructorArgs:
-      - ref: "spoutConfig"
 
 bolts:
   - id: "bolt-stem"
@@ -102,7 +84,7 @@ bolts:
 
 streams:
   - name: "random --> stem" # name isn't used (placeholder for logging, UI, etc.)
-    from: "kafka-spout"
+    from: "spout-1"
     to: "bolt-stem"
     grouping:
       type: LOCAL_OR_SHUFFLE
